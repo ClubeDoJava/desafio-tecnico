@@ -8,7 +8,7 @@ Este desafio tem como objetivo avaliar suas habilidades em desenvolvimento backe
 - Leia com atenção todas as instruções.
 - Crie um repositório no seu GitHub **sem citar nada relacionado ao Clube do Java**.
 - Faça seus commits no repositório seguindo boas práticas de versionamento.
-- Após finalizar, envie o link do projeto como issue .
+- Após finalizar, envie projeto como issue zipado.
 - Você pode utilizar qualquer framework com o qual tenha familiaridade.
 - Sinta-se livre para perguntar qualquer dúvida aos recrutadores.
 
