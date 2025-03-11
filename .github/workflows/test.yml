@@ -38,7 +38,7 @@ jobs:
     
     - name: Publicar resultados dos testes
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: result-logs
         path: target/surefire-reports
