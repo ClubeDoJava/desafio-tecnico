@@ -12,10 +12,10 @@ jobs:
 
     steps:
     - name: Checar código
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Configurar JDK 17
-      uses: actions/setup-java@v2
+      uses: actions/setup-java@v3
       with:
         distribution: 'adopt'
         java-version: '17'
@@ -38,7 +38,7 @@ jobs:
     
     - name: Publicar resultados dos testes
       if: always()
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: result-logs
         path: target/surefire-reports
