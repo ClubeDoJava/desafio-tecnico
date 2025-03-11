@@ -1,8 +1,6 @@
-name: Testes Técnicos
+name: Testar Anexos de Issues
 
 on:
-  push:
-  pull_request:
   issues:
     types: [opened, edited, reopened]
 
@@ -19,36 +17,41 @@ jobs:
       with:
         distribution: 'adopt'
         java-version: '17'
-    
-    - name: Checar etiquetas da issue
-      if: github.event_name == 'issues'
+
+    - name: Baixar e extrair o anexo da issue
       run: |
-        if [[ "${{ github.event.issue.labels.*.name }}" == *"testar"* ]]; then
-          echo "Etiqueta 'testar' encontrada. Executando testes..."
-          ./mvnw test
+        # Obter URL do anexo
+        attachment_url=$(jq -r '.issue.body' "$GITHUB_EVENT_PATH" | grep -Eo 'https://[^ ]+')
+        if [[ -n "$attachment_url" ]]; then
+          curl -L -o projeto.zip "$attachment_url"
+          unzip projeto.zip -d projeto
         else
-          echo "Nenhuma etiqueta relevante encontrada. Pulando testes."
+          echo "Nenhum anexo encontrado na issue."
+          exit 1
         fi
     
+    - name: Entrar na pasta do projeto
+      run: cd projeto
+
     - name: Instalar dependências
       run: ./mvnw install -DskipTests
-    
+
     - name: Análise Estática do Código
       run: ./mvnw checkstyle:check
-    
+
     - name: Executar testes
       run: ./mvnw test
-    
+
     - name: Gerar Relatório de Cobertura de Testes
       run: ./mvnw jacoco:report
-    
+
     - name: Publicar resultados dos testes
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: result-logs
         path: target/surefire-reports
-    
+
     - name: Publicar Relatório de Cobertura
       if: always()
       uses: actions/upload-artifact@v4
