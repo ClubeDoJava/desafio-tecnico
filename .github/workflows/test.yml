@@ -1,0 +1,44 @@
+name: Testes Técnicos
+
+on:
+  push:
+  pull_request:
+  issues:
+    types: [opened, edited, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checar código
+      uses: actions/checkout@v2
+
+    - name: Configurar JDK 17
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '17'
+    
+    - name: Checar etiquetas da issue
+      if: github.event_name == 'issues'
+      run: |
+        if [[ "${{ github.event.issue.labels.*.name }}" == *"testar"* ]]; then
+          echo "Etiqueta 'testar' encontrada. Executando testes..."
+          ./mvnw test
+        else
+          echo "Nenhuma etiqueta relevante encontrada. Pulando testes."
+        fi
+    
+    - name: Instalar dependências
+      run: ./mvnw install -DskipTests
+    
+    - name: Executar testes
+      run: ./mvnw test
+    
+    - name: Publicar resultados dos testes
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+        name: result-logs
+        path: target/surefire-reports
