@@ -36,8 +36,8 @@ jobs:
       run: |
         curl -L -o projeto.zip "${{ steps.get-attachment-url.outputs.url }}"
         file projeto.zip
-        unzip -l projeto.zip
-        unzip projeto.zip -d projeto
+        unzip -d projeto projeto.zip
+        ls projeto
 
     - name: Entrar na pasta do projeto
       run: cd projeto
