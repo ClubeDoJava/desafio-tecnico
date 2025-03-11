@@ -29,32 +29,40 @@ jobs:
           echo "Nenhum anexo encontrado na issue."
           exit 1
         fi
-    
+
     - name: Entrar na pasta do projeto
       run: cd projeto
 
     - name: Instalar dependências
-      run: ./mvnw install -DskipTests
-
+      run: |
+        cd projeto
+        ./mvnw install -DskipTests
+    
     - name: Análise Estática do Código
-      run: ./mvnw checkstyle:check
+      run: |
+        cd projeto
+        ./mvnw checkstyle:check
 
     - name: Executar testes
-      run: ./mvnw test
+      run: |
+        cd projeto
+        ./mvnw test
 
     - name: Gerar Relatório de Cobertura de Testes
-      run: ./mvnw jacoco:report
-
+      run: |
+        cd projeto
+        ./mvnw jacoco:report
+    
     - name: Publicar resultados dos testes
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: result-logs
-        path: target/surefire-reports
+        path: projeto/target/surefire-reports
 
     - name: Publicar Relatório de Cobertura
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: coverage-report
-        path: target/site/jacoco
+        path: projeto/target/site/jacoco
