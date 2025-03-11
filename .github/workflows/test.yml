@@ -21,7 +21,7 @@ jobs:
     - name: Obter URL do anexo
       id: get-attachment-url
       run: |
-        attachment_url=$(jq -r '.issue.body' "$GITHUB_EVENT_PATH" | grep -Eo 'https://[^ ]+')
+        attachment_url=$(jq -r '.issue.body' "$GITHUB_EVENT_PATH" | grep -Eo 'https://[^ )]+')
         echo "Attachment URL: $attachment_url"
         echo "::set-output name=url::$attachment_url"
 
