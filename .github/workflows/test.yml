@@ -18,17 +18,26 @@ jobs:
         distribution: 'adopt'
         java-version: '17'
 
-    - name: Baixar e extrair o anexo da issue
+    - name: Obter URL do anexo
+      id: get-attachment-url
       run: |
-        # Obter URL do anexo
         attachment_url=$(jq -r '.issue.body' "$GITHUB_EVENT_PATH" | grep -Eo 'https://[^ ]+')
-        if [[ -n "$attachment_url" ]]; then
-          curl -L -o projeto.zip "$attachment_url"
-          unzip projeto.zip -d projeto
-        else
+        echo "Attachment URL: $attachment_url"
+        echo "::set-output name=url::$attachment_url"
+
+    - name: Verificar URL do anexo
+      run: |
+        if [ -z "${{ steps.get-attachment-url.outputs.url }}" ]; then
           echo "Nenhum anexo encontrado na issue."
           exit 1
         fi
+
+    - name: Baixar e extrair o anexo da issue
+      run: |
+        curl -L -o projeto.zip "${{ steps.get-attachment-url.outputs.url }}"
+        file projeto.zip
+        unzip -l projeto.zip
+        unzip projeto.zip -d projeto
 
     - name: Entrar na pasta do projeto
       run: cd projeto
